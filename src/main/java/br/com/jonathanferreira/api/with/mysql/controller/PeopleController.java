@@ -4,6 +4,7 @@ import br.com.jonathanferreira.api.with.mysql.controller.dto.PeopleDTO;
 import br.com.jonathanferreira.api.with.mysql.controller.dto.PeopleRq;
 import br.com.jonathanferreira.api.with.mysql.model.People;
 import br.com.jonathanferreira.api.with.mysql.repository.PeopleRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,5 +67,11 @@ public class PeopleController {
         }else {
             throw new Exception("person not found");
         }
+    }
+
+    @DeleteMapping("{id}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void deletePerson(@PathVariable Long id){
+         peopleRepository.deleteById(id);
     }
 }
