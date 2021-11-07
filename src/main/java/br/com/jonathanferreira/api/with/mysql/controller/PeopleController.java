@@ -53,4 +53,18 @@ public class PeopleController {
 
         return PeopleDTO.converter(result);
     }
+
+    @PutMapping("{id}")
+    public void updatePerson(@PathVariable Long id, @RequestBody PeopleRq p) throws Exception {
+        var people = peopleRepository.findById(id);
+        if(people.isPresent()){
+            var peopleSave = people.get();
+            peopleSave.setName(p.getName());
+            peopleSave.setLastname(p.getLastName());
+
+            peopleRepository.save(peopleSave);
+        }else {
+            throw new Exception("person not found");
+        }
+    }
 }
