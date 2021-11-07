@@ -2,9 +2,13 @@ package br.com.jonathanferreira.api.with.mysql.controller;
 
 import br.com.jonathanferreira.api.with.mysql.controller.dto.PeopleDTO;
 import br.com.jonathanferreira.api.with.mysql.repository.PeopleRepository;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,10 +22,25 @@ public class PeopleController {
         this.peopleRepository = peopleRepository;
     }
 
+    @GetMapping("/")
     public List<PeopleDTO> findAll() {
         var peoples = peopleRepository.findAll();
         return peoples.stream()
                 .map(PeopleDTO::converter)
                 .collect(Collectors.toList());
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity findById(@PathVariable("id") Long id) {
+        var peopleOptional = peopleRepository.findById(id);
+        try{
+            if(peopleOptional.isPresent()){
+                var people = peopleOptional.get();
+                return ResponseEntity.ok().body(PeopleDTO.converter(people));
+            }else {
+                throw new SQLException("name not found");
+            }
+        }catch (SQLException e){
+            return ResponseEntity.of(peopleOptional);
+        }
     }
 }
