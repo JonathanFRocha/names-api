@@ -1,12 +1,11 @@
 package br.com.jonathanferreira.api.with.mysql.controller;
 
 import br.com.jonathanferreira.api.with.mysql.controller.dto.PeopleDTO;
+import br.com.jonathanferreira.api.with.mysql.controller.dto.PeopleRq;
+import br.com.jonathanferreira.api.with.mysql.model.People;
 import br.com.jonathanferreira.api.with.mysql.repository.PeopleRepository;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -42,5 +41,16 @@ public class PeopleController {
         }catch (SQLException e){
             return ResponseEntity.of(peopleOptional);
         }
+    }
+
+    @PostMapping("/")
+    public PeopleDTO savePerson(@RequestBody PeopleRq p){
+        var people = new People();
+        people.setName(p.getName());
+        people.setLastname(p.getName());
+
+        var result = peopleRepository.save(people);
+
+        return PeopleDTO.converter(result);
     }
 }
